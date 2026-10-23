@@ -3,9 +3,9 @@
     "step": {
       "user": {
         "title": "Connect Google Fi",
-        "description": "Create Session JSON using the local import helper in the [setup guide]({setup_url}). This contains Google account credentials. Use HTTPS or a trusted local connection to Home Assistant. This step only reads your account; it does not pause or resume data.",
+        "description": "Use the browser setup helper in the [setup guide]({setup_url}): sign in to Google Fi, copy the setup code, and paste it below. No data pause is needed. The code grants Google account access; submit it only to your trusted Home Assistant over HTTPS or a trusted private LAN.",
         "data": {
-          "session_json": "Session JSON",
+          "session_json": "Setup code",
           "account_name": "Account name"
         }
       },
@@ -19,16 +19,16 @@
       },
       "reauth_confirm": {
         "title": "Restore Google Fi access",
-        "description": "Import fresh Session JSON from the same Google Fi account. Until access recovers, a paused line may stay paused. Use [Google Fi]({fi_url}) for direct control.",
+        "description": "Use the browser helper to copy a fresh setup code from the same Google Fi account. No data pause is needed. Until access recovers, a paused line may stay paused. Use [Google Fi]({fi_url}) for direct control.",
         "data": {
-          "session_json": "Session JSON"
+          "session_json": "Setup code"
         }
       }
     },
     "error": {
-      "invalid_session": "The session format is invalid. Use the local import helper in the setup guide.",
+      "invalid_session": "The setup code is invalid. Copy it again using the browser helper in the setup guide.",
       "no_lines": "This account returned no phone lines. Sign in as the Fi group owner and capture a fresh session.",
-      "cannot_connect": "Google Fi did not accept this session or could not be reached. Sign in again and export a fresh capture, then retry.",
+      "cannot_connect": "Google Fi did not accept this session or could not be reached. Sign in again, copy a fresh setup code, and retry.",
       "account_mismatch": "This session has no phone lines in common with the configured account. The existing session was kept.",
       "storage_failed": "Home Assistant could not save the session. Check its configuration directory permissions.",
       "select_lines": "Select at least one phone line."

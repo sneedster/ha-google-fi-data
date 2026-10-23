@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Fi Data setup</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="core.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="eyebrow">Google Fi Data</span><h1>Connect to Home Assistant</h1></header>
+    <p class="intro">Sign in to Fi, then copy a setup code. No phone data settings are changed.</p>
+    <ol class="steps">
+      <li><h2>Check your account in Fi</h2><p>Use a browser profile with only the Google account you want to connect.</p><button id="open-fi" type="button" disabled>Open Google Fi <span aria-hidden="true">↗</span></button></li>
+      <li><h2>Copy your setup code</h2><p>From the signed-in Fi tab, reopen this helper and copy the code.</p><button id="copy-code" class="primary" type="button" disabled>Copy setup code</button></li>
+    </ol>
+    <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Then paste into the Setup code field when adding Google Fi Data in Home Assistant.</div>
+    <footer>This code grants Google account access. Paste it only into your trusted Home Assistant. Clear your clipboard after setup.</footer>
+  </main>
+</body>
+</html>

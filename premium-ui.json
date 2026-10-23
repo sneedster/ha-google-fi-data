@@ -1,7 +1,27 @@
 {
   "profile": "product-admin",
   "canonicalMap": "UX-CONTRACT.md",
-  "requiredCapabilities": ["Form", "Select/Listbox", "Toast"],
-  "sourceRoots": ["custom_components"],
-  "ownership": {"select": "native", "date": "native"}
+  "requiredCapabilities": [
+    "Form",
+    "Select/Listbox",
+    "Toast"
+  ],
+  "sourceRoots": [
+    "custom_components",
+    "browser_helper"
+  ],
+  "ownership": {
+    "select": "native",
+    "date": "native"
+  },
+  "commands": {
+    "unit": "python3 -m unittest discover -s tests",
+    "helper": "node --test tests_helper/*.test.cjs",
+    "package": "python3 tools/package_helper.py --output work/helper-build"
+  },
+  "requiredCommands": [
+    "unit",
+    "helper",
+    "package"
+  ]
 }

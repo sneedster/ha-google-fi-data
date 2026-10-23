@@ -17,10 +17,11 @@ def normalize_session(text):
         if not isinstance(text, str) or len(text.encode()) > MAX_SESSION_BYTES:
             raise ValueError
         raw = json.loads(text)
-        agent, context = raw["user_agent"], raw["control_context"]
+        agent, context = raw["user_agent"], raw.get("control_context")
         if not isinstance(agent, str) or not 1 <= len(agent) <= 2048 or any(c in agent for c in "\r\n"):
             raise ValueError
-        if not isinstance(context, list) or not context or not isinstance(raw["cookies"], list):
+        if ((context is not None and (not isinstance(context, list) or not context))
+                or not isinstance(raw["cookies"], list)):
             raise ValueError
         cookies = []
         for cookie in raw["cookies"]:

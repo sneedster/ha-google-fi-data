@@ -12,6 +12,11 @@ jobs:
           python-version: '3.14'
       - run: python -m unittest discover -s tests
       - run: python -m compileall -q custom_components tools
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests_helper/*.test.cjs
+      - run: python tools/package_helper.py --output work/helper-build
   native-flow-tests:
     runs-on: ubuntu-latest
     steps:

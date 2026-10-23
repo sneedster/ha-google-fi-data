@@ -37,6 +37,13 @@ def har():
 
 
 class ImportTests(unittest.TestCase):
+    def test_cookie_only_helper_code_is_accepted_without_pause_context(self):
+        raw = seed()
+        del raw['control_context']
+        result = subject.normalize_session(json.dumps(raw))
+        self.assertIsNone(result['control_context'])
+        self.assertEqual(len(result['cookies']), 1)
+
     def test_normalization_drops_unrelated_domains_cookies_and_extra_fields(self):
         raw = seed()
         raw['opaque_resume_action'] = 'do not retain'
@@ -48,7 +55,7 @@ class ImportTests(unittest.TestCase):
         self.assertTrue(result['cookies'][0]['secure'])
 
     def test_invalid_input_never_echoes_credentials(self):
-        for raw in ['SECRET', '{}', '[]', json.dumps({**seed(), 'control_context': None}),
+        for raw in ['SECRET', '{}', '[]', json.dumps({**seed(), 'control_context': 'bad'}),
                     json.dumps({**seed(), 'cookies': [{'name': 'SID', 'value': 'SECRET', 'domain': 'bad'}]}),
                     json.dumps({**seed(), 'user_agent': 'SECRET\r\ninjection'})]:
             with self.assertRaisesRegex(subject.FiError, '^invalid_session$'):
@@ -97,19 +104,19 @@ class ImportTests(unittest.TestCase):
         source = har()
         source['log']['entries'][0]['response'] = {'content': {'text': 'private account data'}}
         result = har_import.from_har(source)
-        self.assertEqual(result['control_context'], [1])
+        self.assertNotIn('control_context', result)
         self.assertEqual(len(result['cookies']), 1)
         self.assertNotIn('irrelevant', json.dumps(result))
         self.assertNotIn('private account data', json.dumps(result))
         subject.normalize_session(json.dumps(result))
 
-    def test_sanitized_har_and_missing_pause_context_are_rejected(self):
+    def test_sanitized_har_is_rejected_but_no_pause_capture_is_needed(self):
         source = har()
         source['log']['entries'][0]['request']['headers'] = []
         with self.assertRaises(ValueError): har_import.from_har(source)
         source = har()
         source['log']['entries'][0]['request']['postData'] = {}
-        with self.assertRaises(ValueError): har_import.from_har(source)
+        self.assertNotIn('control_context', har_import.from_har(source))
 
     def test_other_hosts_cannot_supply_cookies_or_context(self):
         source = har()

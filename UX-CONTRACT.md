@@ -13,8 +13,13 @@ manually added HACS repository for friends and family, not a catalog submission.
 
 ## Authentication boundary
 
-The offline helper extracts only Fi credentials and the request context, never
-replays a captured action, and never contacts Google. Setup validates a private
+The offline HAR fallback extracts only Fi auth cookies and User-Agent, discards
+actions/responses, and never contacts Google. The browser helper reads the active
+Fi tab’s bootstrap and corresponding cookie store on explicit copy; it makes no
+requests, writes no cookies, has no page message API or background/storage, and
+places the setup code only on the user’s clipboard. It does not render the code.
+HA derives fresh context from its own authenticated account-page read. It never
+needs a captured pause action or context. Setup validates a private
 candidate using account reads before line choice; cancellation does not replace
 the active jar. Same-account reauthentication checks all configured line IDs before
 committing. No credentials in config-entry data, error strings, logs, diagnostics,
@@ -30,10 +35,10 @@ never pauses phone service or automatically resumes data after authentication lo
 ## Verification boundary
 
 Tests use synthetic credentials, captures and account snapshots. Public onboarding
-has not been verified on a second real Google account. A browser rendering/keyboard
-acceptance pass of the new flow is not claimed. Home Assistant owns rendering;
-there are no custom frontend assets. Live household installation is not upgraded
-as part of publishing this standalone package.
+has not been verified on a second real Google account. Home Assistant owns its native rendering. The separate helper is verified with
+synthetic browser APIs and popup success/error/busy/keyboard rendering; do not
+confuse that with a real extension installation or another-account acceptance.
+Household upgrades are a separately verified deployment with a private backup.
 
 ## Account options and migration
 
@@ -44,3 +49,18 @@ options, and reloads the entry; stale switches are removed only from that entry�
 entity registry. It never calls a data-control operation. Empty selection is allowed.
 A new account cannot overlap known line identities with another configured account.
 Reauthentication requires a surviving known line, allowing members to be removed.
+
+## Browser setup helper
+
+| Capability | Canonical owner | Source of truth | Allowed variants | Verification |
+| --- | --- | --- | --- | --- |
+| Button | Native extension buttons | browser_helper/popup.html, popup.css | Open Fi; copy setup code | Keyboard, busy and failure recovery |
+| Feedback | Extension-local inline status | browser_helper/popup.js | Fixed safe errors, busy, copied | Synthetic browser UI + helper tests |
+| Clipboard | Explicit copy action | browser_helper/core.js, popup.js | Local copy only; no automatic HA connection | Store/account race tests; no raw exception output |
+
+The helper supports one signed-in Google account per browser profile. Another Fi
+account uses another profile; non-default authuser/session indices are rejected.
+Cookie store identity must match the active Fi tab; never fall back to another
+store. Capture rechecks the member identifier and document URL before copy. Cookie
+values are filtered to fixed authentication names, exact Google/Fi domains, HTTPS
+and unpartitioned storage. No external services receive capture contents.

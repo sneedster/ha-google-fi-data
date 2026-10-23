@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+
+- Derive fresh ModifyUser request context from the signed-in Fi page; no data pause is needed for authentication.
+- Add local Chrome/Edge and temporary Firefox setup helpers: normal Google sign-in, then copy one setup code into HA.
+- Capture from the active Fi tab’s cookie store, with account-change checks, fixed cookie filtering, no background storage, and no network transport.
+- Retain offline HAR import as an advanced fallback; a normal account-page reload is sufficient.
+- Accept cookie-only imports and older Session JSON; preserve existing sessions, entity IDs, selected lines, and account options.
+- Add context/bootstrap and helper isolation tests, and helper checks/packaging to automatic CI.
+
+No live data-control tests are performed by the helper or setup. A second real Google account and long-term cookie portability remain unverified.
+
 ## 0.2.0
 
 First public, experimental friends-and-family release for manual HACS custom repositories.

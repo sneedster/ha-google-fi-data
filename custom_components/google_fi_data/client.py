@@ -36,6 +36,21 @@ def field(value, number):
     return value[number - 1] if isinstance(value, list) and len(value) >= number else None
 
 
+def build_control_context(member_id):
+    """Mirror Fi's request interceptor using the signed-in page's member ID.
+
+    Wx fields 3 and 11 are client constants; field 27 is false because this
+    client does not send the browser's `wv` URL flag. IDs are uint64 strings,
+    never floating point numbers. No control request is needed to obtain them.
+    """
+    if (not isinstance(member_id, str) or not re.fullmatch(r"[1-9][0-9]{0,19}", member_id)
+            or int(member_id) > 2**64 - 1):
+        raise AuthError("account_identity_missing")
+    context = [None] * 27
+    context[0], context[2], context[10], context[26] = member_id, 1, True, False
+    return context
+
+
 def decode_response(body):
     try:
         text = body.decode("utf-8")
@@ -271,9 +286,11 @@ class FiClient:
         def get(key):
             match = re.search(r'"' + key + r'"\s*:\s*("(?:\\.|[^"\\])*")', html)
             return json.loads(match.group(1)) if match else None
-        self.token, self.page_token = get("SNlM0e"), get("NF1pM")
-        if not self.token:
+        token, page_token = get("SNlM0e"), get("NF1pM")
+        if not token:
             raise AuthError("sign_in_required")
+        context = build_control_context(get("EEqW7b"))
+        self.token, self.page_token, self.control_context = token, page_token, context
         self.bootstrap_at = time.time()
 
     def _rotate(self):

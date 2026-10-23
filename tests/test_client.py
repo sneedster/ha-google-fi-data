@@ -54,7 +54,7 @@ class FakeClient(client.FiClient):
                 raise client.FiError("http_503")
             return b"ok"
         if path.startswith("/account"):
-            return b'<script>window.WIZ_global_data={"SNlM0e":"TEST_TOKEN","NF1pM":"TEST_PAGE"}</script>'
+            return b'<script>window.WIZ_global_data={"SNlM0e":"TEST_TOKEN","NF1pM":"TEST_PAGE","EEqW7b":"123"}</script>'
         if path.startswith("/xhr/ppBype"):
             if self.bad_account:
                 return b"malformed"
