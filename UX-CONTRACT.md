@@ -37,7 +37,10 @@ never pauses phone service or automatically resumes data after authentication lo
 Tests use synthetic credentials, captures and account snapshots. Public onboarding
 has not been verified on a second real Google account. Home Assistant owns its native rendering. The separate helper is verified with
 synthetic browser APIs and popup success/error/busy/keyboard rendering; do not
-confuse that with a real extension installation or another-account acceptance.
+confuse that with another-account acceptance. A user-installed Chrome helper was
+tested with a fresh capture: native HA read-only validation accepted it and
+aborted as already configured, leaving the working account unchanged. The user
+confirmed actual popup width; Firefox live capture remains unverified.
 Household upgrades are a separately verified deployment with a private backup.
 
 ## Account options and migration

@@ -155,7 +155,10 @@ node --test tests_helper/*.test.cjs
 
 Tests use invented accounts, synthetic responses, and temporary directories. They do
 not contact Google or change real phone lines. The original private build was verified
-on the author's household account, including session renewal and HA restarts. The
+on the author's household account, including session renewal and HA restarts. A fresh
+Chrome-helper capture was also accepted by HA's read-only validation and correctly
+identified the existing account without replacing its credentials or changing data.
+The
 public setup/import and multi-account/options paths are tested with synthetic captures
 and account snapshots, including native HA flow/schema tests; a fresh setup on another
 Google account has **not** been verified. No claim is made that this works with every
