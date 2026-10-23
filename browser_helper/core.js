@@ -2,6 +2,11 @@
 (function (root) {
   "use strict";
   const FI = "https://fi.google.com/account";
+  // Chromium checks non-Secure cookie access against an HTTP origin, even
+  // for cookies.getAll({url: HTTPS_URL}). These are access declarations only;
+  // every page opened and cookie query below still uses HTTPS.
+  const COOKIE_ORIGINS = ["https://fi.google.com/*", "https://google.com/*",
+    "http://fi.google.com/*", "http://google.com/*"];
   const AUTH = /^(?:SID|HSID|SSID|APISID|SAPISID|OSID|SIDCC|__Secure-(?:OSID|[13]P(?:SID|APISID|SIDCC|SIDTS)))$/;
   const ERRORS = {
     wrong_tab: "Open Google Fi and sign in, then open this helper from that tab.",
@@ -9,6 +14,7 @@
     not_ready: "Fi is not ready. Finish signing in, reload the account page, then try again.",
     no_store: "The browser session could not be identified. Reopen this helper from the Google Fi tab.",
     no_cookies: "No usable Google session was found. Sign in to Fi in this browser profile and try again.",
+    permissions_missing: "Allow this helper’s Google and Fi site access on your browser’s Extensions page, then try again. It still uses HTTPS only.",
     changed: "The Fi account changed during capture. Check the account in Fi, then try again.",
     too_large: "The browser session could not be captured. Use a profile with only your intended Google account.",
     copy_failed: "The browser could not copy the setup code. Reopen the helper and try again.",
@@ -76,6 +82,9 @@
     const tabs = await api.tabs.query({ active: true, currentWindow: true });
     const tab = tabs[0];
     checkUrl(tab?.url);
+    if (!await api.permissions.contains({ origins: COOKIE_ORIGINS })) {
+      throw new Error("permissions_missing");
+    }
     const read = async () => {
       const results = await api.scripting.executeScript({ target: { tabId: tab.id }, func: readFiPage });
       const page = results[0]?.result;
@@ -94,7 +103,7 @@
     return makeSession(second, cookies);
   }
 
-  const exported = { FI, ERRORS, checkUrl, readFiPage, checkPage, makeSession, capture };
+  const exported = { FI, COOKIE_ORIGINS, ERRORS, checkUrl, readFiPage, checkPage, makeSession, capture };
   if (typeof module !== "undefined" && module.exports) module.exports = exported;
   else root.FiSetup = exported;
 })(globalThis);

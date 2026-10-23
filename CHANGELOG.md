@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+
+- Declare HTTP cookie-origin access for the same two Google/Fi hosts. Chromium checks non-Secure cookies against HTTP origins even when retrieving cookies for an HTTPS URL, so HTTPS-only permissions silently omitted them.
+- Check all required cookie permissions before capture and show an actionable error when access is missing. The helper still opens/queries HTTPS only, makes no network requests of its own, and exports cookies as HTTPS-only for HA.
+
 ## 0.3.2
 
 - Include allowlisted login cookies even when the browser cookie lacks the Secure flag, and include SAPISID. Copied cookies remain HTTPS-only in HA.

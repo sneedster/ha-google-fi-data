@@ -62,5 +62,8 @@ The helper supports one signed-in Google account per browser profile. Another Fi
 account uses another profile; non-default authuser/session indices are rejected.
 Cookie store identity must match the active Fi tab; never fall back to another
 store. Capture rechecks the member identifier and document URL before copy. Cookie
-values are filtered to fixed authentication names, exact Google/Fi domains, HTTPS
-and unpartitioned storage. No external services receive capture contents.
+values are filtered to fixed authentication names, exact Google/Fi domains and
+unpartitioned storage. Exported cookies are HTTPS-only. HTTP cookie-origin access
+is declared solely because Chromium checks non-Secure cookies against HTTP hosts;
+opening Fi and cookie retrieval still use HTTPS. Missing permissions stop capture
+before any page or cookie read. No external services receive capture contents.

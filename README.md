@@ -61,6 +61,13 @@ analytics, request interception, or network transport. It reads cookies only aft
 **Copy setup code** is clicked, from the cookie store of the active Fi tab. Remove
 or disable it after setup if you prefer.
 
+The manifest includes HTTP and HTTPS access for these same two hosts because
+Chromium checks a cookie without the Secure flag against an HTTP cookie origin,
+even when retrieving cookies for the HTTPS Fi URL. This is a cookie-access
+requirement: the helper opens and queries HTTPS only, and copied cookies are
+restricted to HTTPS in HA. Updates may ask you to approve the additional host
+access. Capture stops with an error if required permissions are missing.
+
 ### Connect an account
 
 1. Use a browser profile signed into **only the intended Google account**, as the

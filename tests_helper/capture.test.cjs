@@ -10,6 +10,7 @@ const cookie = () => ({name:'SID', value:'SYNTHETIC_NOT_A_CREDENTIAL', domain:'.
 function api(options={}) {
   let reads=0;
   return {tabs:{query:async()=>[{id:7,url:options.url||core.FI,cookieStoreId:'private'}]},
+    permissions:{contains:async args=>{assert.deepEqual(args,{origins:core.COOKIE_ORIGINS});return options.permissions !== false;}},
     scripting:{executeScript:async()=>[{result:reads++ && options.after ? options.after : page()}]},
     cookies:{getAllCookieStores:async()=>options.stores||[{id:'other',tabIds:[8]},{id:'private',tabIds:[7]}],
       getAll:async args=>{assert.deepEqual(args,{url:core.FI,storeId:'private'});return [cookie()];}}};
@@ -22,6 +23,12 @@ test('capture binds cookie reads to the active Fi tab store and contains no cont
 });
 test('no cookie store fallback if the tab cannot be matched',async()=>{
   await assert.rejects(core.capture(api({stores:[{id:'other',tabIds:[8]}]})),/no_store/);
+});
+test('missing cookie host access fails before reading page or cookies',async()=>{
+  const mock=api({permissions:false});
+  mock.scripting.executeScript=async()=>assert.fail('must not read page');
+  mock.cookies.getAll=async()=>assert.fail('must not read cookies');
+  await assert.rejects(core.capture(mock),/permissions_missing/);
 });
 test('account or document changes during capture abort before copy',async()=>{
   for(const after of [{...page(),member_id:'456'}, {...page(),url:core.FI+'#account/2'}])
@@ -65,6 +72,11 @@ test('readFiPage reads DOM bootstrap without exposing CSRF token or executing pa
 test('helper manifest and implementation have no persistence, remote code, or network transport',()=>{
   const dir=path.join(__dirname,'../browser_helper');
   const manifest=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json')));
+  // Chromium authorizes non-Secure cookies using their HTTP cookie origin;
+  // HTTPS-only declarations silently filter SID/HSID-family cookies out.
+  assert.deepEqual(manifest.host_permissions,core.COOKIE_ORIGINS);
+  assert.ok(core.COOKIE_ORIGINS.includes('http://google.com/*'));
+  assert.ok(core.COOKIE_ORIGINS.includes('http://fi.google.com/*'));
   assert.deepEqual(manifest.permissions.sort(),['activeTab','clipboardWrite','cookies','scripting']);
   assert.ok(!manifest.background);
   assert.ok(!manifest.externally_connectable);
