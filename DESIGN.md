@@ -38,7 +38,7 @@ Inherit Home Assistant typography in HA. The helper uses the system UI font at 1
 
 Use the native Add integration and Reauthentication flows. Session import precedes
 line selection; the same masked input and validation are reused for reauthentication.
-No credential appears in a label, error, URL, selected-line screen, or saved config entry. The helper is a 370px popup that reflows at narrower widths: account check, copy action, reserved feedback region, privacy guidance. Its two numbered steps represent the actual ordered workflow. No overlay or nested navigation.
+No credential appears in a label, error, URL, selected-line screen, or saved config entry. The helper has an explicit 400px root width and 360px minimum, avoiding viewport-width feedback during browser-popup sizing: account check, copy action, reserved feedback region, privacy guidance. Its two numbered steps represent the actual ordered workflow. No overlay or nested navigation.
 
 ## Elevation & Depth
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Give the browser helper an explicit 400px popup width and minimum width. Avoid viewport-relative maximum width collapsing the actual Chrome extension popup.
+- No changes to Fi data-control behavior, entity identities, or account options.
+
 ## 0.3.0
 
 - Derive fresh ModifyUser request context from the signed-in Fi page; no data pause is needed for authentication.

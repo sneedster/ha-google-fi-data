@@ -1,4 +1,6 @@
 :root {
+  width: 400px;
+  min-width: 360px;
   color-scheme: light dark;
   --surface: #ffffff;
   --ink: #182a35;
@@ -19,7 +21,7 @@
   scrollbar-width: thin;
 }
 * { box-sizing: border-box; }
-body { margin: 0; width: 370px; max-width: 100vw; background: var(--surface); color: var(--ink); }
+body { margin: 0; width: 100%; min-width: 360px; background: var(--surface); color: var(--ink); }
 main { padding: 24px; }
 .eyebrow { display: block; color: var(--accent); font-weight: 650; font-size: 12px; letter-spacing: .06em; }
 h1 { font-size: 23px; letter-spacing: -.025em; line-height: 1.2; margin: 8px 0 14px; }

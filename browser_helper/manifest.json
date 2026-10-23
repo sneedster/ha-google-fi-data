@@ -1,11 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Google Fi Data setup helper",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Copy your signed-in Google Fi session into your own Home Assistant, without pausing data.",
-  "permissions": ["activeTab", "cookies", "scripting", "clipboardWrite"],
-  "host_permissions": ["https://fi.google.com/*", "https://google.com/*"],
-  "action": {"default_title": "Set up Google Fi Data", "default_popup": "popup.html"},
-  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"},
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "scripting",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://fi.google.com/*",
+    "https://google.com/*"
+  ],
+  "action": {
+    "default_title": "Set up Google Fi Data",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"
+  },
   "incognito": "split"
 }
