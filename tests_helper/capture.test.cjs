@@ -37,15 +37,21 @@ test('missing tokens, malformed IDs and other session indices cannot be captured
     {token_present:false},{session_index:'1'},{user_agent:'secret\ninjection'}])
     assert.throws(()=>core.makeSession({...page(),...changes},[cookie()]));
 });
-test('only fixed auth-cookie names on exact Google/Fi domains and unpartitioned HTTPS survive',()=>{
+test('only fixed auth-cookie names on exact Google/Fi domains and unpartitioned cookies survive',()=>{
   const values=[cookie(), {...cookie(),name:'analytics'}, {...cookie(),domain:'evilgoogle.com'},
     {...cookie(),domain:'.accounts.google.com'}, {...cookie(),partitionKey:{}},
-    {...cookie(),firstPartyDomain:'other'}, {...cookie(),secure:false},
+    {...cookie(),firstPartyDomain:'other'},
     {...cookie(),name:'__Secure-1PSIDTS',expirationDate:2000000000}];
   const result=JSON.parse(core.makeSession(page(),values));
   assert.deepEqual(result.cookies.map(c=>c.name),['SID','__Secure-1PSIDTS']);
   assert.equal(result.cookies[1].expires,2000000000);
   assert.throws(()=>core.makeSession(page(),values.slice(1,-1)),/no_cookies/);
+});
+test('legacy login cookies need not have Secure set; exported cookies are always HTTPS-only',()=>{
+  const values=['SID','HSID','APISID','SAPISID'].map(name=>({...cookie(),name,secure:false}));
+  const result=JSON.parse(core.makeSession(page(),values));
+  assert.deepEqual(result.cookies.map(c=>c.name),values.map(c=>c.name));
+  assert.ok(result.cookies.every(c=>c.secure === true));
 });
 test('readFiPage reads DOM bootstrap without exposing CSRF token or executing page code',()=>{
   const result=vm.runInNewContext('('+core.readFiPage.toString()+')()',{

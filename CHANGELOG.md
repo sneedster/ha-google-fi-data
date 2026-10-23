@@ -2,6 +2,7 @@
 
 ## 0.3.2
 
+- Include allowlisted login cookies even when the browser cookie lacks the Secure flag, and include SAPISID. Copied cookies remain HTTPS-only in HA.
 - Validate imported browser sessions with Fi account reads only. Do not renew Google cookies during the initial check; defer routine renewal for a full interval after import.
 - Show specific safe errors for rejected sessions, missing sign-in/member identity, and Google rate limiting.
 

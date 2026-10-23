@@ -2,7 +2,7 @@
 (function (root) {
   "use strict";
   const FI = "https://fi.google.com/account";
-  const AUTH = /^(?:SID|HSID|SSID|APISID|OSID|SIDCC|__Secure-(?:OSID|[13]P(?:SID|APISID|SIDCC|SIDTS)))$/;
+  const AUTH = /^(?:SID|HSID|SSID|APISID|SAPISID|OSID|SIDCC|__Secure-(?:OSID|[13]P(?:SID|APISID|SIDCC|SIDTS)))$/;
   const ERRORS = {
     wrong_tab: "Open Google Fi and sign in, then open this helper from that tab.",
     wrong_account: "Use a browser profile signed into only the Google account you want to connect. Open Fi there and try again.",
@@ -62,7 +62,7 @@
     const cookies = source.filter(c =>
       ["google.com", ".google.com", "fi.google.com", ".fi.google.com"].includes(c.domain)
       && AUTH.test(c.name) && typeof c.value === "string" && c.value && !/[\r\n]/.test(c.value)
-      && c.secure === true && !c.partitionKey && !c.firstPartyDomain
+      && !c.partitionKey && !c.firstPartyDomain
     ).map(c => ({ name: c.name, value: c.value, domain: c.domain, secure: true,
       path: c.path || "/", expires: Number.isFinite(c.expirationDate) ? c.expirationDate : null }));
     if (!cookies.length) throw new Error("no_cookies");
