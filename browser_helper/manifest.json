@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Google Fi Data setup helper",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Copy your signed-in Google Fi session into your own Home Assistant, without pausing data.",
   "permissions": [
     "activeTab",

@@ -78,7 +78,8 @@ class ImportTests(unittest.TestCase):
                     self.candidate = candidate
                     assert candidate != path
                     assert os.stat(candidate).st_mode & 0o777 == 0o600
-                def poll(self, force):
+                def poll(self, force, *, rotate_cookies=True):
+                    assert rotate_cookies is False
                     return {'lines': {'456': {'name': 'Another line', 'enabled': True}}}
             with patch.object(subject, 'FiClient', FakeClient):
                 with self.assertRaisesRegex(subject.FiError, '^account_mismatch$'):
@@ -92,7 +93,9 @@ class ImportTests(unittest.TestCase):
             path.write_text('ORIGINAL')
             class FakeClient:
                 def __init__(self, candidate): pass
-                def poll(self, force): return {'lines': {'123': {'name': 'A line', 'enabled': True}}}
+                def poll(self, force, *, rotate_cookies=True):
+                    assert rotate_cookies is False
+                    return {'lines': {'123': {'name': 'A line', 'enabled': True}}}
             with patch.object(subject, 'FiClient', FakeClient):
                 candidate, lines = subject.validate_session(path, seed(), ('123',))
             self.assertIn('123', lines)

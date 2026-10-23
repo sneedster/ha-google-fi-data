@@ -190,6 +190,7 @@ class FiClient:
         self.jar = http.cookiejar.CookieJar()
         self.token = self.page_token = None
         self.bootstrap_at = self.last_rotation = self.last_rotation_attempt = 0.0
+        self.rotation_not_before = 0.0
         self.rotation_count = 0
         self.rotation_error = None
         self.user_agent = ""
@@ -208,6 +209,9 @@ class FiClient:
             now = time.time()
             self.last_rotation = float(raw.get("last_rotation", 0))
             self.last_rotation_attempt = float(raw.get("last_rotation_attempt", 0))
+            self.rotation_not_before = float(raw.get("rotation_not_before", 0))
+            if self.rotation_not_before > now + 600:
+                self.rotation_not_before = 0.0
             if self.last_rotation > now + 60 or self.last_rotation_attempt > now + 60:
                 self.last_rotation = self.last_rotation_attempt = 0.0
             self.rotation_error = raw.get("rotation_error")
@@ -239,6 +243,7 @@ class FiClient:
         """Only called after an authenticated account read; atomic and owner-only."""
         raw = {"user_agent": self.user_agent, "control_context": self.control_context,
                "last_rotation": self.last_rotation, "last_rotation_attempt": self.last_rotation_attempt,
+               "rotation_not_before": self.rotation_not_before,
                "rotation_error": self.rotation_error,
                "cookies": [{"name": c.name, "value": c.value, "domain": c.domain,
                             "path": c.path, "secure": c.secure, "expires": c.expires}
@@ -308,7 +313,7 @@ class FiClient:
         parse_lines(account)  # Validate before accepting or persisting the session.
         return account
 
-    def poll(self, force=False):
+    def poll(self, force=False, *, rotate_cookies=True):
         with self.lock:
             try:
                 changed = self.path.stat().st_mtime_ns != self._loaded_mtime
@@ -317,7 +322,7 @@ class FiClient:
             if changed:
                 self._load()
                 self.token = self.page_token = None
-            if time.time() - self.last_rotation_attempt >= 600:
+            if rotate_cookies and time.time() >= self.rotation_not_before and time.time() - self.last_rotation_attempt >= 600:
                 self.last_rotation_attempt = time.time()
                 try:
                     self._rotate()
@@ -332,6 +337,10 @@ class FiClient:
                 # Retrying this read is safe; write operations are never retried.
                 self._bootstrap()
                 account = self._read_account()
+            if not rotate_cookies:
+                # A copied browser session is already fresh. Validate with reads
+                # only, then leave a full interval before routine HA renewal.
+                self.rotation_not_before = time.time() + 600
             self._save()
             return {"lines": parse_lines(account), "rotation_error": self.rotation_error,
                     "last_rotation": self.last_rotation,

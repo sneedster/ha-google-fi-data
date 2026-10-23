@@ -60,7 +60,8 @@ def save_session(path, session):
 def validate_session(path, session, expected_ids=()):
     """Read the candidate in private scratch space; committing is separate.
 
-    Cookie renewal may run. No pause/resume operation is called.
+    Only Fi bootstrap/account reads run; cookie renewal is deferred.
+    No pause/resume operation is called.
     A wrong account cannot replace a working session during reauthentication.
     """
     parent = Path(path).parent
@@ -68,7 +69,7 @@ def validate_session(path, session, expected_ids=()):
     with tempfile.TemporaryDirectory(prefix=".fi-import-", dir=parent) as directory:
         candidate = Path(directory) / "session.json"
         save_session(candidate, session)
-        snapshot = FiClient(candidate).poll(force=True)
+        snapshot = FiClient(candidate).poll(force=True, rotate_cookies=False)
         lines = snapshot["lines"]
         if not lines:
             raise FiError("no_lines")

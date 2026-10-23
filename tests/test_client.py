@@ -6,6 +6,7 @@ from pathlib import Path
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 PATH = Path(__file__).parents[1] / "custom_components/google_fi_data/client.py"
 spec = importlib.util.spec_from_file_location("fi_client", PATH)
@@ -140,6 +141,20 @@ class ClientTests(unittest.TestCase):
         instance.poll()
         self.assertEqual({p for p, _, _ in instance.calls},
                          {"https://accounts.google.com/RotateCookies", "/account", "/xhr/ppBype"})
+
+    def test_fresh_session_validation_reads_only_and_defers_renewal_across_restart(self):
+        with patch.object(client.time, "time", return_value=10000):
+            instance = FakeClient(self.path)
+            self.assertTrue(instance.poll(force=True, rotate_cookies=False)["lines"]["123"]["enabled"])
+            self.assertEqual({p for p, _, _ in instance.calls}, {"/account", "/xhr/ppBype"})
+            self.assertEqual(json.loads(self.path.read_text())["rotation_not_before"], 10600)
+        with patch.object(client.time, "time", return_value=10599):
+            restarted = FakeClient(self.path)
+            restarted.poll(force=True)
+            self.assertFalse(any(p.startswith("https://accounts.google.com") for p, _, _ in restarted.calls))
+        with patch.object(client.time, "time", return_value=10600):
+            restarted.poll(force=True)
+            self.assertEqual(sum(p.startswith("https://accounts.google.com") for p, _, _ in restarted.calls), 1)
 
     def test_pause_uses_verified_indefinite_payload(self):
         instance = FakeClient(self.path)

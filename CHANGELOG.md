@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+- Validate imported browser sessions with Fi account reads only. Do not renew Google cookies during the initial check; defer routine renewal for a full interval after import.
+- Show specific safe errors for rejected sessions, missing sign-in/member identity, and Google rate limiting.
+
 ## 0.3.1
 
 - Give the browser helper an explicit 400px popup width and minimum width. Avoid viewport-relative maximum width collapsing the actual Chrome extension popup.

@@ -12,6 +12,9 @@ from .client import FiClient, FiError
 from .const import DOMAIN, SESSION_FILE, known_line_ids, selected_lines, session_file
 from .session_import import normalize_session, save_session, validate_session
 
+SESSION_ERRORS = {"invalid_session", "no_lines", "session_rejected", "sign_in_required",
+                  "account_identity_missing", "http_429"}
+
 
 class GoogleFiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -48,7 +51,7 @@ class GoogleFiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._candidate, self._lines = await self._validate(user_input.get("session_json"))
             except FiError as error:
                 code = str(error)
-                return self._session_form("user", code if code in {"invalid_session", "no_lines"} else "cannot_connect")
+                return self._session_form("user", code if code in SESSION_ERRORS else "cannot_connect")
             except OSError:
                 return self._session_form("user", "storage_failed")
             identities = set(self._lines)
@@ -107,7 +110,7 @@ class GoogleFiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     save_session, self.hass.config.path(session_file(entry)), candidate)
             except FiError as error:
                 code = str(error)
-                return self._session_form("reauth_confirm", code if code in {"invalid_session", "no_lines", "account_mismatch"} else "cannot_connect")
+                return self._session_form("reauth_confirm", code if code in SESSION_ERRORS | {"account_mismatch"} else "cannot_connect")
             except OSError:
                 return self._session_form("reauth_confirm", "storage_failed")
             return self.async_update_reload_and_abort(entry, data_updates={})

@@ -67,6 +67,19 @@ class FlowTests(unittest.IsolatedAsyncioTestCase):
             save.assert_not_called()
             self.flow._validate.assert_awaited_once_with('fake', ('123',))
 
+    async def test_authentication_errors_are_specific_but_never_echo_unknown_details(self):
+        entry = SimpleNamespace(data={'lines': {'123': 'First line'}}, title='Google Fi', options={})
+        self.flow._get_reauth_entry = Mock(return_value=entry)
+        for error in ('session_rejected', 'sign_in_required', 'account_identity_missing', 'http_429', 'PRIVATE_DETAIL'):
+            expected = error if error != 'PRIVATE_DETAIL' else 'cannot_connect'
+            self.flow._validate = AsyncMock(side_effect=FiError(error))
+            with patch('custom_components.google_fi_data.config_flow.save_session') as save:
+                for step in (self.flow.async_step_user, self.flow.async_step_reauth_confirm):
+                    result = await step({'session_json': 'fake'})
+                    self.assertEqual(result['errors'], {'base': expected})
+                    self.assertNotIn('PRIVATE_DETAIL', str(result))
+                save.assert_not_called()
+
     async def test_successful_reauthentication_saves_then_reloads(self):
         entry = SimpleNamespace(data={'lines': {'123': 'First line'}}, title='Google Fi', options={})
         self.flow._get_reauth_entry = Mock(return_value=entry)

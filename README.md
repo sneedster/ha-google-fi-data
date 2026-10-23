@@ -80,7 +80,7 @@ original browser/device or revoke them later; an exported cookie is not guarante
 to remain usable. If a Chrome capture quickly stops working, try a fresh Firefox
 capture. The helper does not disable session protections or bypass verification.
 
-HA validates the account with a read before offering line selection. Credentials
+HA validates with Fi account reads only, without calling Google’s cookie-renewal endpoint. Routine renewal is deferred for ten minutes after a successful import. Credentials
 stay out of config-entry data and are committed only after line confirmation.
 Rejected candidates keep the active session intact. Each account has an owner-only,
 atomic session file under `.storage/google_fi_data.<account-key>.session.json`;

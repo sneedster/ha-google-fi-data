@@ -31,7 +31,11 @@
       "cannot_connect": "Google Fi did not accept this session or could not be reached. Sign in again, copy a fresh setup code, and retry.",
       "account_mismatch": "This session has no phone lines in common with the configured account. The existing session was kept.",
       "storage_failed": "Home Assistant could not save the session. Check its configuration directory permissions.",
-      "select_lines": "Select at least one phone line."
+      "select_lines": "Select at least one phone line.",
+      "session_rejected": "Google rejected the copied session. Sign in to Fi again and copy a fresh code. If Chrome keeps failing, try a fresh Firefox capture.",
+      "sign_in_required": "The copied cookies did not open a signed-in Fi account page. Check the intended account and the helper\u2019s Google cookie permissions, then copy again.",
+      "account_identity_missing": "Fi\u2019s account page did not provide a usable member ID. Check that the intended Fi owner account is signed in; the page format may also have changed.",
+      "http_429": "Google is limiting sign-in checks. Wait before trying again. The existing configured session was kept."
     },
     "abort": {
       "already_configured": "This Google Fi account is already configured.",
