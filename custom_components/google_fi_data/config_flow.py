@@ -38,7 +38,9 @@ class GoogleFiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({**({vol.Optional("account_name", default="Google Fi"): str} if step == "user" else {}),
                 vol.Required("session_json"): selector.TextSelector(
                 selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD))}),
-            errors={"base": error} if error else {})
+            errors={"base": error} if error else {},
+            description_placeholders=({"setup_url": "https://github.com/sneedster/ha-google-fi-data#authentication"}
+                                      if step == "user" else {"fi_url": "https://fi.google.com/account"}))
 
     async def async_step_user(self, user_input=None):
         if user_input is not None:

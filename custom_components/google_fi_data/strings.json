@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect Google Fi",
-        "description": "Create Session JSON using the local import helper in the [setup guide](https://github.com/sneedster/ha-google-fi-data#authentication). This contains Google account credentials. Use HTTPS or a trusted local connection to Home Assistant. This step only reads your account; it does not pause or resume data.",
+        "description": "Create Session JSON using the local import helper in the [setup guide]({setup_url}). This contains Google account credentials. Use HTTPS or a trusted local connection to Home Assistant. This step only reads your account; it does not pause or resume data.",
         "data": {
           "session_json": "Session JSON",
           "account_name": "Account name"
@@ -19,7 +19,7 @@
       },
       "reauth_confirm": {
         "title": "Restore Google Fi access",
-        "description": "Import fresh Session JSON from the same Google Fi account. Until access recovers, a paused line may stay paused. Use [Google Fi](https://fi.google.com/account) for direct control.",
+        "description": "Import fresh Session JSON from the same Google Fi account. Until access recovers, a paused line may stay paused. Use [Google Fi]({fi_url}) for direct control.",
         "data": {
           "session_json": "Session JSON"
         }
