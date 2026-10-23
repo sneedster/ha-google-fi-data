@@ -1,0 +1,58 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Google Fi",
+        "description": "Create Session JSON using the local import helper in the [setup guide](https://github.com/sneedster/ha-google-fi-data#authentication). This contains Google account credentials. Use HTTPS or a trusted local connection to Home Assistant. This step only reads your account; it does not pause or resume data.",
+        "data": {
+          "session_json": "Session JSON",
+          "account_name": "Account name"
+        }
+      },
+      "lines": {
+        "title": "Choose phone lines",
+        "description": "Choose the lines this integration may control. On enables mobile data; off pauses mobile data indefinitely. A persistent Home Assistant alert warns if access fails.",
+        "data": {
+          "line_ids": "Phone lines",
+          "notify_service": "Also notify this phone"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Restore Google Fi access",
+        "description": "Import fresh Session JSON from the same Google Fi account. Until access recovers, a paused line may stay paused. Use [Google Fi](https://fi.google.com/account) for direct control.",
+        "data": {
+          "session_json": "Session JSON"
+        }
+      }
+    },
+    "error": {
+      "invalid_session": "The session format is invalid. Use the local import helper in the setup guide.",
+      "no_lines": "This account returned no phone lines. Sign in as the Fi group owner and capture a fresh session.",
+      "cannot_connect": "Google Fi did not accept this session or could not be reached. Sign in again and export a fresh capture, then retry.",
+      "account_mismatch": "This session has no phone lines in common with the configured account. The existing session was kept.",
+      "storage_failed": "Home Assistant could not save the session. Check its configuration directory permissions.",
+      "select_lines": "Select at least one phone line."
+    },
+    "abort": {
+      "already_configured": "This Google Fi account is already configured.",
+      "reauth_successful": "Google Fi access was restored.",
+      "account_already_configured": "This Google Fi account is already configured. Use Configure on its existing entry to change phone lines."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manage phone lines",
+        "description": "Select the lines to expose and choose failure notifications for this account. Adding or removing a control does not change data in Google Fi. A removed line may remain paused: resume it in Fi first if needed. You can deselect all lines to keep only account health monitoring.",
+        "data": {
+          "line_ids": "Phone lines",
+          "notify_service": "Also notify this phone"
+        }
+      }
+    },
+    "error": {
+      "reauth_required": "The account could not be read. Restore this account\u2019s authentication in Home Assistant, then reopen Configure.",
+      "select_lines": "Choose only lines listed for this account."
+    }
+  }
+}

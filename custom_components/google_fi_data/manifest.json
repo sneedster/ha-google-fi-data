@@ -1,0 +1,14 @@
+{
+  "domain": "google_fi_data",
+  "name": "Google Fi Data",
+  "version": "0.2.0",
+  "config_flow": true,
+  "documentation": "https://github.com/sneedster/ha-google-fi-data",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "codeowners": [
+    "@sneedster"
+  ],
+  "issue_tracker": "https://github.com/sneedster/ha-google-fi-data/issues",
+  "integration_type": "hub"
+}

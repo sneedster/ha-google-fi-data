@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.har
+*session*.json
+.storage/
+work/
+premium-audit.json
+*.pem
+*.key
+.env

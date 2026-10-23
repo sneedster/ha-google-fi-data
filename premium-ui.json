@@ -1,0 +1,7 @@
+{
+  "profile": "product-admin",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Form", "Select/Listbox", "Toast"],
+  "sourceRoots": ["custom_components"],
+  "ownership": {"select": "native", "date": "native"}
+}
